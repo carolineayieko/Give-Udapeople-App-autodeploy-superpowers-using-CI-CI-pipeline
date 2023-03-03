@@ -68,9 +68,10 @@ jobs:
           key: backend-build
 
   test-frontend:
-    docker: 
+    docker:
       - image: circleci/node:13.8.0
-    - checkout
+    steps:
+      - checkout
       - restore_cache:
           keys: [frontend-test]
       - run:
@@ -280,8 +281,8 @@ workflows:
       - build-backend
       - test-frontend:
           requires: [build-frontend]
-#       - test-backend:
-#           requires: [build-backend]
+      - test-backend:
+          requires: [build-backend]
 #       - scan-backend:
 #           requires: [build-backend]
 #       - scan-frontend:
