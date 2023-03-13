@@ -486,7 +486,7 @@ jobs:
             fi
   
   
-    configure-node-exporter:
+  configure-node-exporter:
     docker:
       # - image: amazon/aws-cli   #Executor
       - image: cimg/python:3.10     #Executor    
