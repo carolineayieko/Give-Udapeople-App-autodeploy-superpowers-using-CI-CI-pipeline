@@ -484,7 +484,37 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
-            
+  
+  
+    configure-node-exporter:
+    docker:
+      # - image: amazon/aws-cli   #Executor
+      - image: cimg/python:3.10     #Executor    
+    steps:
+      - checkout
+      - install_ansible
+      - install_awscli
+      - add_ssh_keys:
+          fingerprints: ["eb:10:83:b9:81:40:ca:f7:66:3f:46:c0:2a:d5:9b:83"]
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       yum update -y
+      #       yum install -y  tar gzip
+      #       curl -sL https://rpm.nodesource.com/setup_13.x | bash -
+      #       yum install -y nodejs
+      #       amazon-linux-extras install -y epel
+      #       yum install -y ansible
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Configure node_exporter
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook configure-prometheus-node-exporter.yml -i inventory.txt
+
+          
 
 workflows:
   default:
@@ -518,3 +548,6 @@ workflows:
           requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
+      - configure-node-exporter:
+          requires: [cleanup]
+          
